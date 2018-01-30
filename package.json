@@ -1,0 +1,16 @@
+{
+  "name": "skillstore",
+  "version": "2.0.0",
+  "description": "机器人技能商店",
+  "main": "",
+  "scripts": {
+    "start": "webpack-dev-server --content-base public --open"
+  },
+  "author": "deepbrain",
+  "homepage": "",
+  "dependencies": {
+    "osajax": "^1.1.0",
+    "swiper": "^4.1.0"
+  },
+  "devDependencies": {}
+}

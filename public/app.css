@@ -1,0 +1,147 @@
+
+@charset "UTF-8";
+*{
+    margin:0;
+    padding:0;
+}
+body{
+    color:#504d47;
+}
+header{
+    background-color: #55524c;
+    color: white;
+    text-align: center;
+    height: 75px;
+    line-height: 75px;
+    font-size: 27px;
+}
+.swiper-container {
+    width: 100%;
+    height: 273px;
+}
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    /* Center slide text vertically */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+#tab{
+    border-bottom: 1px solid #ddd;
+    margin: 0 8px;
+}
+#tab > *{
+    display: inline-block;
+    margin:0 8px 1px 8px;
+    width: 140px;
+    height: 70px;
+    line-height: 70px;
+    text-align: center;
+    font-size: 27px;
+    color: #555;
+}
+.tab-active{
+    color: #03a9f4;
+    border-bottom: 3px solid #03a9f4;
+}
+.wrapper{
+
+}
+.item-type{
+    display: flex;
+    background-color: #f4f4f4;
+    border-bottom: 1px solid #ccc;
+    height: 70px;
+}
+.item-type > span{
+    font-size: 27px;
+    align-self: center;
+}
+.item-type > span:nth-child(1){
+    margin-left: 25px;
+    margin-right: auto;
+}
+.item-type > span:nth-child(2){
+    margin-right: 25px;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    background-color: white;
+    color: #03a9f4;
+    border-radius: 6px;
+}
+.panel{
+    position: relative;
+    border-bottom: 1px solid #ccc;
+    height: 180px;
+}
+.item-logo{
+    position: absolute;
+    top:25px;
+    left: 25px;
+    width: 130px;
+    height: 130px;
+    border-radius: 10%;
+    background-size: cover;
+}
+.item-title{
+    position: absolute;
+    top:25px;
+    left: 190px;
+    font-size: 27px;
+}
+.item-charge{
+    position: absolute;
+    top:25px;
+    right: 30px;
+    color: #f75b43;
+    font-size: 24px;
+}
+.item-device,.item-evaluation{
+    position: absolute;
+    top:65px;
+    left: 190px;
+    color: #a4a3a1;
+    font-size: 20px;
+}
+.item-stars{
+    position: absolute;
+    top:28px;
+    left: 400px;
+}
+.item-evaluation{
+    left: 400px;
+}
+.item-getskill{
+    position: absolute;
+    font-size: 21px;
+    top:115px;
+    right: 30px;
+    padding: 6px 16px;
+    border: 1px solid grey;
+    border-radius: 6px;
+    background-color: #4E8593;
+    color: white;
+}
+.item-content{
+    position: absolute;
+    top:110px;
+    left: 190px;
+    width: 320px;
+    font-size: 18px;
+    overflow : hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
