@@ -1,4 +1,3 @@
-
 @charset "UTF-8";
 *{
     margin:0;
@@ -7,41 +6,60 @@
 body{
     color:#504d47;
 }
-header{
+#skill_view{
+    position: relative;
+}
+#header{
+    position: fixed;
+    top:0;
+    left: 0;
+    width: 100%;
     background-color: #55524c;
     color: white;
     text-align: center;
     height: 75px;
     line-height: 75px;
     font-size: 27px;
+    z-index: 1000000;
 }
-.swiper-container {
-    width: 100%;
+#banner_wrapper{
+    position: relative;
+    margin-top:75px;
     height: 273px;
+    overflow: hidden;
 }
-.swiper-slide {
-    text-align: center;
-    font-size: 18px;
-    background: #fff;
-    /* Center slide text vertically */
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    -webkit-justify-content: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    -webkit-align-items: center;
-    align-items: center;
+.img_wrapper{
+    position: absolute;
+    top:0;
+    width: 100%;
+    height: inherit;
+    background-size: cover;
 }
-#tab{
+#controls_wrapper{
+    position: absolute;
+    z-index: 1;
+    width: auto;
+    height: 5px;
+    bottom: 6%;
+}
+.img_control{
+    position: absolute;
+    width: 40px;
+    background: grey;
+    height: inherit;
+    border-radius: 2px;
+    opacity: 0.4;
+}
+.img_active{
+    background: white;
+    opacity: 1;
+}
+#tabs{
+    position: relative;
     border-bottom: 1px solid #ddd;
     margin: 0 8px;
 }
-#tab > *{
+#tabs > *{
     display: inline-block;
     margin:0 8px 1px 8px;
     width: 140px;
@@ -55,8 +73,12 @@ header{
     color: #03a9f4;
     border-bottom: 3px solid #03a9f4;
 }
-.wrapper{
-
+#tabsPanelsWrapper{
+    position: relative;
+}
+.tabs_panels{
+    display: none;
+    overflow: auto;
 }
 .item-type{
     display: flex;
@@ -74,7 +96,7 @@ header{
 }
 .item-type > span:nth-child(2){
     margin-right: 25px;
-    padding: 6px 10px;
+    padding: 3px 10px;
     border: 1px solid #ccc;
     background-color: white;
     color: #03a9f4;
@@ -116,7 +138,7 @@ header{
 }
 .item-stars{
     position: absolute;
-    top:28px;
+    top:33px;
     left: 400px;
 }
 .item-evaluation{
@@ -128,14 +150,13 @@ header{
     top:115px;
     right: 30px;
     padding: 6px 16px;
-    border: 1px solid grey;
     border-radius: 6px;
     background-color: #4E8593;
     color: white;
 }
-.item-content{
+.item-content,.item-content-myskill{
     position: absolute;
-    top:110px;
+    top:105px;
     left: 190px;
     width: 320px;
     font-size: 18px;
@@ -144,4 +165,113 @@ header{
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+}
+.item-content-myskill{
+    width: 420px;
+}
+#pay,#confirmWindow{
+    position: fixed;
+    top:0;
+    left: 0;
+    background: rgba(0,0,0,.4);
+    width: 100%;
+    height: 100%;
+    z-index: 1000000;
+    /*display: none;*/
+}
+#pay_panel{
+    position: absolute;
+    background-color: white;
+    width: 500px;
+    height: 300px;
+    left: 50%;
+    top: 50%;
+    margin-left: -250px;
+    margin-top: -150px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 2px 2px 8px #666;
+}
+#pay_panel img{
+    position: absolute;
+    left: 30px;
+    top:10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+}
+#pay_panel span{
+    position: absolute;
+    right: 0;
+    height: 70px;
+    line-height: 70px;
+    display: block;
+    width: 400px;
+    text-align: center;
+    font-size: 24px;
+}
+#pay_panel > div{
+    position: relative;
+    height: 70px;
+    margin: 20px 15px;
+    border: 1px solid grey;
+    border-radius: 6px;
+}
+#confirmWindow{
+    /*display: block;*/
+}
+#DBCConfirm{
+    position: absolute;
+    background-color: white;
+    width: 360px;
+    height: 160px;
+    left: 50%;
+    top: 50%;
+    margin-left: -180px;
+    margin-top: -80px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 2px 2px 8px #666;
+}
+#confirmTitle{
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+    font-size: 24px;
+    color: #777;
+    border-bottom: 1px solid #ccc;
+}
+.bt-wrapper{
+    position: relative;
+    height: 59px;
+}
+.bt-wrapper > div{
+    display: inline-block;
+    height: 59px;
+    line-height: 59px;
+    width: 179px;
+    font-size: 24px;
+}
+.bt-wrapper > div:nth-child(1){
+    border-right: 1px solid #ccc;
+    color: #555;
+}
+.bt-wrapper > div:nth-child(2){
+    color: #87C65C;
+}
+
+/*智慧家庭*/
+#smartHome{
+    text-align: center;
+    padding: 70px;
+    font-size: 50px;
+    color: #d5d5d5;
+}
+
+/*我的账户*/
+#myAccount{
+    text-align: center;
+    padding: 70px;
+    font-size: 50px;
+    color: #d5d5d5;
 }

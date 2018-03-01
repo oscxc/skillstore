@@ -10,7 +10,7 @@
   "homepage": "",
   "dependencies": {
     "osajax": "^1.1.0",
-    "swiper": "^4.1.0"
+    "osani": "^1.0.0"
   },
   "devDependencies": {}
 }
