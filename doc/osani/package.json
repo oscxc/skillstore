@@ -1,0 +1,22 @@
+{
+  "name": "osani",
+  "version": "1.0.0",
+  "description": "开源平面动画模块",
+  "main": "osani.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oscxc/osani.git"
+  },
+  "keywords": [
+    "osani"
+  ],
+  "author": "七八个星天怪",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oscxc/osani/issues"
+  },
+  "homepage": "https://github.com/oscxc/osani#readme"
+}

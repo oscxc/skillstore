@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>osani</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+        #d,#d2{
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            top: 100px;
+            left: 100px;
+            background-color: brown;
+            border-radius:8px;
+            color: white;
+            text-align: center;
+            line-height: 100px;
+        }
+        #d2{
+            top: 300px;
+        }
+    </style>
+    <script src="osani.js"></script>
+</head>
+<body>
+<div id="d">No Target!</div>
+<div id="d2"></div>
+<input id="run" type="button" value="运行">
+<input id="pause" type="button" value="暂停">
+<input id="reset" type="button" value="重置">
+<script>
+    var d = document.getElementById('d');
+    var d2 = document.getElementById('d2');
+    var run = document.getElementById('run');
+    var pause = document.getElementById('pause');
+    var reset = document.getElementById('reset');
+    var width = new osani({
+        el:d,
+        type:'scaleX',
+        begin:1,
+        end:2,
+        time:1000,
+        endCallback:function () {
+            console.log('end');
+        }
+    });
+    run.onclick = function () {
+        width.run(function (value) {
+            //console.log(value);
+        });
+    };
+    pause.onclick = function () {
+        width.pause();
+    };
+    reset.onclick = function () {
+        width.reset();
+    };
+</script>
+</body>
+</html>

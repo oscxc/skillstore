@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>技能商店—API接口需求文档</title>
+    <link rel="stylesheet" href="osmenu/styles/osmenu.css">
+    <script src="osmenu/osmenu.min.js"></script>
+    <link rel="stylesheet" href="highlight/myHLJS.css">
+    <script src="highlight/highlight.js"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            font-family: Verdana,Tahoma,Consolas,'Microsoft Yahei';
+            background-color: #e7e8eb;
+        }
+        header{
+            position: fixed;
+            top:0;
+            width: 100%;
+            line-height: 60px;
+            height: 60px;
+            text-align: center;
+            background-color: #3B3738;
+            color: white;
+            font-size: 25px;
+            z-index: 10000000;
+        }
+        [id^='api']{
+            position: absolute;
+            background-color: white;
+            top:64px;
+            left: 304px;
+            right: 0;
+            display: none;
+        }
+        [id^='api'] > div:nth-child(1){
+            padding: 20px 60px;
+            font-size: 30px;
+            background-color: #d5d5d5;
+            color: #E44835;
+        }
+        .explain{
+            color: #666;
+            padding: 20px 60px;
+            font-size: 24px;
+        }
+        .method{
+            width: 60px;
+            height: 30px;
+            font-size: 18px;
+            line-height: 30px;
+            color: white;
+            margin: 0 0 20px 60px;
+            background: #E44835;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .code{
+            padding: 10px 60px;
+        }
+        .example{
+            font-size: 27px;
+            padding: 20px 0 20px 60px;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            var menuData = {
+                open:'M19,13H5V11H19V13Z',
+                close:'M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z',
+                data:[
+                    {
+                        title:{
+                            name:'轮播图'
+                        },
+                        items:[
+                            {
+                                name:'获取5张图片URL'
+                            }
+                        ]
+                    },
+                    {
+                        title:{
+                            name:'我的技能'
+                        },
+                        items:[
+                            {
+                                name:'加载我的技能'
+                            },
+                            {
+                                name:'技能停用和启用'
+                            },
+                            {
+                                name:'星标技能开关'
+                            },
+                            {
+                                name:'用户删除技能'
+                            },
+                            {
+                                name:'用户技能顺序'
+                            }
+                        ]
+                    },
+                    {
+                        title:{
+                            name:'技能商店'
+                        },
+                        items:[
+                            {
+                                name:'加载技能商店技能'
+                            },
+                            {
+                                name:'更多技能查询'
+                            },
+                            {
+                                name:'关键字搜索技能'
+                            },
+                            {
+                                name:'加入搜索统计'
+                            },
+                            {
+                                name:'获取热门搜索'
+                            }
+                        ]
+                    },
+                    {
+                        title:{
+                            name:'技能详情'
+                        },
+                        items:[
+                            {
+                                name:'技能基本信息及三条评论'
+                            },
+                            {
+                                name:'评论点赞及取消'
+                            },
+                            {
+                                name:'加载全部评论'
+                            },
+                            {
+                                name:'我的评论提交'
+                            },
+                            {
+                                name:'评论详情'
+                            },
+                            {
+                                name:'回复提交'
+                            }
+                        ]
+                    },
+                    {
+                        title:{
+                            name:'智慧家庭'
+                        },
+                        items:[
+                            {
+                                name:'敬请期待'
+                            }
+                        ]
+                    },
+                    {
+                        title:{
+                            name:'我的账户'
+                        },
+                        items:[
+                            {
+                                name:'账户余额'
+                            },
+                            {
+                                name:'消费明细'
+                            },
+                            {
+                                name:'充值记录'
+                            },
+                            {
+                                name:'DBC充值地址'
+                            }
+                        ]
+                    },
+                    {
+                        title:{
+                            name:'支付'
+                        },
+                        items:[
+                            {
+                                name:'DBC支付'
+                            },
+                            {
+                                name:'微信支付'
+                            },
+                            {
+                                name:'支付宝支付'
+                            },
+                            {
+                                name:'技能买入'
+                            }
+                        ]
+                    }
+                ]
+            }
+            function $(s) {
+                return document.querySelector(s)
+            }
+            var H = window.innerHeight
+            var current
+            function switchAPI(el) {
+                document.body.scrollTop = 0
+                el.style.display = 'block'
+                new osani({
+                    el:el,
+                    type:'opacity',
+                    begin:0,
+                    end:1,
+                    time:300,
+                }).run()
+            }
+            var z = 0
+            new osmenu({
+                data:menuData,// 创建菜单需要的数据
+                open:5,// true|false|number  默认展开所有菜单
+                activeIndex:[5,0], //false|[number,number]|菜单名  活动状态的菜单索引
+                changeTime: 240, //菜单展开和收缩动画时间  毫秒
+                mode:true,   //true|false   false打开跳转链接 true执行回调
+                loadRunCallback:true, //创建完成之后是否执行回调
+                callback:function (name,index) {
+                    if(z==0){
+                        current = $('#api_'+index[0]+index[1])
+                        current.children[0].innerHTML = name
+                        current.style.zIndex = ++z
+                        switchAPI(current)
+                    }
+                    else{
+                        var el = $('#api_'+index[0]+index[1])
+                        if(current!=el){
+                            el.children[0].innerHTML = name
+                            current.style.display = 'none'
+                            switchAPI(current = el)
+                        }
+                    }
+                }
+            })
+        }
+    </script>
+    <script src="osani/osani.js"></script>
+</head>
+<body>
+<header>DeepBrain技能商店 - API接口需求文档</header>
+<div id="api_00">
+    <div></div>
+    <div class="explain">说明：滚动显示5个推荐的机器人技能，需要返回5张图片(w:640px,h:270px)</div>
+    <div class="method">GET</div>
+    <div class="code">
+            <pre><code class="hljs">/SkillStore/BannerImages</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/SkillStore/BannerImages</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">[
+    'https://example.com/1.jpg',
+    'https://example.com/1.jpg',
+    'https://example.com/1.jpg',
+    'https://example.com/1.jpg',
+    'https://example.com/1.jpg'
+]</code></pre>
+    </div>
+</div>
+<div id="api_10">
+    <div></div>
+    <div class="explain">说明：需要上滑加载，按页号加载技能，每页加载最多15个。</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/MySkill/List?robotId=xxx&userId=xxx&page=xxx</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/MySkill/List?robotId=573e0d07-2ee9-469e-ace8-a6cc611968e4&userId=4503&page=1</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">[
+    {
+        技能id:xxx,
+        技能图片:xxx,
+        技能名称:xxx,
+        使用设备数:xxx,
+        技能简介:xxx,
+        启用停用状态:xxx,
+        星标开启状态:xxx
+     },
+     {
+        技能id:xxx,
+        技能图片:xxx,
+        技能名称:xxx,
+        使用设备数:xxx,
+        技能简介:xxx,
+        启用停用状态:xxx,
+        星标开启状态:xxx
+     },
+     ...
+]</code></pre>
+    </div>
+</div>
+<div id="api_11">
+    <div></div>
+    <div class="explain">说明：用户可以设置停用和启用技能，设置技能 enabled 字段 true 或者 false </div>
+    <div class="method">POST</div>
+    <div class="code">
+        <pre><code class="hljs">/MySkill/Enabled</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/MySkill/Enabled
+
+
+{
+    robotId:573e0d07-2ee9-469e-ace8-a6cc611968e4,
+    userId:4503,
+    技能id:3124324,
+    Enabled:true
+}
+        </code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">{
+    success:true
+}</code></pre>
+    </div>
+</div>
+<div id="api_12">
+    <div></div>
+    <div class="explain">说明：用户可以开启或关闭某技能星标</div>
+    <div class="method">POST</div>
+    <div class="code">
+        <pre><code class="hljs">/MySkill/StarOpen</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/MySkill/StarOpen
+
+
+{
+    appId:com.voice.assistant.main,
+    robotId:573e0d07-2ee9-469e-ace8-a6cc611968e4,
+    userId:4503,
+    技能id:3124324,
+    StarOpen:true
+}
+        </code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">{
+    success:true
+}</code></pre>
+    </div>
+</div>
+<div id="api_13">
+    <div></div>
+    <div class="explain">说明：用户可以删除某技能</div>
+    <div class="method">POST</div>
+    <div class="code">
+        <pre><code class="hljs">/MySkill/Delete</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/MySkill/Delete
+
+
+{
+    appId:com.voice.assistant.main,
+    robotId:573e0d07-2ee9-469e-ace8-a6cc611968e4,
+    userId:4503,
+    技能Id:3124324
+}
+        </code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">{
+    success:true
+}</code></pre>
+    </div>
+</div>
+<div id="api_14">
+    <div></div>
+    <div class="explain">说明：用户新购买的技能需要显示在最上面，并且用户可以拖动技能互换位置。</div>
+    <div class="method">POST</div>
+    <div class="code">
+        <pre><code class="hljs">/MySkill/Transposition</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/MySkill/Delete
+
+
+{
+    appId:com.voice.assistant.main,
+    robotId:573e0d07-2ee9-469e-ace8-a6cc611968e4,
+    userId:4503,
+    两个技能id:[3124324,3124360]
+}
+        </code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">{
+    success:true
+}</code></pre>
+    </div>
+</div>
+<div id="api_20">
+    <div></div>
+    <div class="explain">说明：需要上滑加载，按页号加载技能，每页加载最多5个分类的技能，每类最多给3个。同时还需要给出用户的所有技能Id以区分哪些是已拥有的</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/SkillStore/List?page=xxx</code></pre>
+    </div>
+    <div class="code">
+        <pre><code class="hljs">/MySkill/ListId?appId=xxx&robotId=xxx&userId=xxx</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/MySkill/List?appId=com.voice.assistant.main&robotId=573e0d07-2ee9-469e-ace8-a6cc611968e4&userId=4503&page=1</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">[
+    {
+        技能分类名称:人气技能,
+        该分类下的技能数:10,
+        技能:[
+            {
+                技能id:xxx,
+                技能图片URL:xxx,
+                技能名称:xxx,
+                技能评分:0-10,
+                技能价格:RMB,
+                在用设备数:23000,
+                评价数:290,
+                简介:xxxx
+            },
+            {
+                技能id:xxx,
+                技能图片:xxx,
+                技能名称:xxx,
+                技能评分:0-10,
+                技能价格:RMB,
+                在用设备数:23000,
+                评价数:290,
+                简介:xxxx
+            },
+            {
+                技能id:xxx,
+                技能图片:xxx,
+                技能名称:xxx,
+                技能评分:0-10,
+                技能价格:RMB,
+                在用设备数:23000,
+                评价数:290,
+                简介:xxxx
+            },
+        ]
+     },
+     ...
+]</code></pre>
+    </div>
+</div>
+<div id="api_21">
+    <div></div>
+    <div class="explain">说明：技能分类下多于3个技能会显示更多技能，点击更多技能搜索出该分类下的所有技能</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/SkillStore/MoreSkills?category=xxx</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/SkillStore/MoreSkills?category=人气技能</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">[
+    {
+        技能id:xxx,
+        技能图片URL:xxx,
+        技能名称:xxx,
+        技能评分:0-10,
+        技能价格:RMB,
+        在用设备数:23000,
+        评价数:290,
+        简介:xxxx
+     },
+     {
+        技能id:xxx,
+        技能图片URL:xxx,
+        技能名称:xxx,
+        技能评分:0-10,
+        技能价格:RMB,
+        在用设备数:23000,
+        评价数:290,
+        简介:xxxx
+     },
+     ...
+]</code></pre>
+    </div>
+</div>
+<div id="api_22">
+    <div></div>
+    <div class="explain">说明：用户输入关键字搜索或点击热门标签搜索，需要上滑加载，按页号加载技能，每页加载最多15个</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/SkillStore/Search?keyword=xxx&page=xxx</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/SkillStore/Search?keyword=咖啡&page=1</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">[
+    {
+        技能id:xxx,
+        技能图片URL:xxx,
+        技能名称:xxx,
+        技能评分:0-10,
+        技能价格:RMB,
+        在用设备数:23000,
+        评价数:290,
+        简介:xxxx
+    },
+    {
+        技能id:xxx,
+        技能图片URL:xxx,
+        技能名称:xxx,
+        技能评分:0-10,
+        技能价格:RMB,
+        在用设备数:23000,
+        评价数:290,
+        简介:xxxx
+    },
+     ...
+]</code></pre>
+    </div>
+</div>
+<div id="api_23">
+    <div></div>
+    <div class="explain">说明：每次点击搜索按钮需要提交本次搜索关键字，后端需要将该关键字的搜索次数+1</div>
+    <div class="method">POST</div>
+    <div class="code">
+        <pre><code class="hljs">/SkillStore/Keyword</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/SkillStore/Keyword
+
+
+故事
+        </code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">{
+    success:true
+}</code></pre>
+    </div>
+</div>
+<div id="api_24">
+    <div></div>
+    <div class="explain">说明：前端需要展示给用户哪些是热门搜索，后端给出搜索次数最高的前20个关键字</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/SkillStore/HotSkills</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/SkillStore/HotSkills</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">娱乐,故事,咖啡,运动,音乐...</code></pre>
+    </div>
+</div>
+<div id="api_30">
+    <div></div>
+    <div class="explain">说明：根据技能Id获取该技能基本信息（技能Id，技能名称，技能图片URL，技能平均分，
+        评价数，设备数，价格，功能介绍，使用句式举例，样例，更新功能）+ 评价信息（参与评分人数，支持率，三条评论信息）</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/Skill/Details?skillid=xxx</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/Skill/Details?skillid=44243235</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">{
+    技能id:xxx,
+    技能图片URL:xxx,
+    技能名称:xxx,
+    技能平均分:xxx,
+    技能评价数:xxx,
+    使用设备数:xxx,
+    价格:xxx,
+    功能介绍:xxx,
+    使用句式举例:xxx,
+    样例:xxx,
+    更新功能:{
+        更新时间:xxx,
+        更新版本:xxx,
+        其他更新内容:xxx
+    },
+    评价:{
+        参与评分人数:100,
+        支持率:88%,
+        三条评论信息:[
+            {
+                评论Id:23,
+                评论机器人名称+设备号:艾克力机器人fdfrw523535,
+                评分:8,
+                评论版本:xxx,
+                评论内容:xxxx,
+                评论时间:xxx,
+                点赞人id集合:['43','54'],
+                该评论被评论数:xxx
+            },
+            {
+                评论Id:24,
+                评论机器人名称+设备号:艾克力机器人fdfrw864535,
+                评分:8,
+                评论版本:xxx,
+                评论内容:xxxx,
+                评论时间:xxx,
+                点赞人id集合:['43','54'],
+                该评论被评论数:xxx
+            },
+            {
+                评论Id:25,
+                评论机器人名称+设备号:艾克力机器人fdfrw453535,
+                评分:8,
+                评论版本:xxx,
+                评论内容:xxxx,
+                评论时间:xxx,
+                点赞人id集合:['43','54'],
+                该评论被评论数:xxx
+            }
+        ]
+    }
+}</code></pre>
+    </div>
+</div>
+<div id="api_31">
+    <div></div>
+    <div class="explain">说明：每个技能评论应该有点赞用户id集合字段，用户点击触发请求，如果集合中存在则删除，如果不存在则添加</div>
+    <div class="method">POST</div>
+    <div class="code">
+        <pre><code class="hljs">/Comment/Support</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/Comment/Support
+
+
+userId</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">{
+    success:true
+}</code></pre>
+    </div>
+</div>
+<div id="api_32">
+    <div></div>
+    <div class="explain">说明：需要上滑加载，按页号加载评论，每页加载最多10个，支持分类查询（好评，中评，差评，默认全部）。
+        返回的每个评论需要包含字段（评论id，评论机器人名称+设备号，评分，评论版本,评论内容，评论时间，点赞人id集合，该评论被评论数）</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/Skill/CommentList?SkillId=xxx&Level=xxx&page=xxx</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/Skill/CommentList?SkillId=4342&Level=0&page=xxx</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">[
+    {
+        评论Id:25,
+        评论机器人名称+设备号:艾克力机器人fdfrw453535,
+        评分:8,
+        评论版本:xxx,
+        评论内容:xxxx,
+        评论时间:xxx,
+        点赞人id集合:['43','54'],
+        该评论被评论数:12
+    },
+    {
+        评论Id:26,
+        评论机器人名称+设备号:艾克力机器人fdfrw453536,
+        评分:8,
+        评论版本:xxx,
+        评论内容:xxxx,
+        评论时间:xxx,
+        点赞人id集合:['43','54'],
+        该评论被评论数:6
+    },
+     ...
+]</code></pre>
+    </div>
+</div>
+<div id="api_33">
+    <div></div>
+    <div class="explain">说明：用户提交自己的评论，提交时检查有没有拥有该技能，没有需要提示，有则提交评论内容（skillId，星评得分，文字内容，机器人+设备号，技能版本）</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/MySkill/Own?appId=xxx&robotId=xxx&userId=xxx&skillId=xxx</code></pre>
+    </div>
+    <div class="method">POST</div>
+    <div class="code">
+        <pre><code class="hljs">/Skill/Comment</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/MySkill/Own?appId=xxx&robotId=xxx&userId=xxx&skillId=xxx</code></pre>
+    </div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/Skill/Comment
+
+{
+    skillId:com.voice.assistant.main,
+    星评得分:3,
+    文字内容:xxx,
+    机器人+设备号:fdsfdfd3124324,
+    技能版本:xxx
+}
+
+        </code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">true</code></pre>
+    </div>
+    <div class="code">
+        <pre><code class="hljs">{
+    success:true
+}</code></pre>
+    </div>
+</div>
+<div id="api_34">
+    <div></div>
+    <div class="explain">说明：评论详情是对技能评论的回复，每个回复有一个目标人，默认目标是该评论的发起者，回复信息需要分页加载，每页暂定30个</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/Comment/Details?评论Id=xxx&page=xxx</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/Comment/Details?评论Id=xxx&page=xxx</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">
+{
+    评论Id:26,
+    评论机器人名称+设备号:艾克力机器人fdfrw453536,
+    评分:8,
+    版本:xxx,
+    评论内容:xxxx,
+    评论时间:xxx,
+    点赞人id集合:['43','54'],
+    回复总数:600,
+    回复列表:[
+        {
+            回复id:xxx,
+            回复者:xxx,
+            回复目标:xxx,
+            回复内容:xxx，
+            回复时间:xxx
+        },
+        ...
+    ]
+}</code></pre>
+    </div>
+</div>
+<div id="api_35">
+    <div></div>
+    <div class="explain">说明：回复是对技能评论或者对评论回复者的</div>
+    <div class="method">POST</div>
+    <div class="code">
+        <pre><code class="hljs">/Comment/Reply</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/Comment/Reply
+
+{
+    评论id:xxx,
+    回复者:xxx,
+    回复目标:xxx,
+    回复内容:xxx
+}
+        </code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">
+{
+    success:true
+}</code></pre>
+    </div>
+</div>
+<div id="api_40">
+    <div></div>
+</div>
+<div id="api_50">
+    <div></div>
+    <div class="explain">说明：余额指的是DBC余额，对应数据库用户的余额字段，需要一个余额查询接口</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/User/Balance?appId=xxx&robotId=xxx&userId=xxx</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/User/Balance?appId=xxx&robotId=xxx&userId=xxx</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">200</code></pre>
+    </div>
+</div>
+<div id="api_51">
+    <div></div>
+    <div class="explain">说明：买入技能会生成消费记录(详见下文支付分类-技能买入)，用户可以查看自己的消费记录，需要分页加载，每页15个</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/User/ConsumeList?appId=xxx&robotId=xxx&userId=xxx&page=xxx</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/User/ConsumeList?appId=com.voice.assistant.main&robotId=573e0d07-2ee9-469e-ace8-a6cc611968e4&userId=4503&page=1</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">[
+    {
+        消费记录id:xxx,
+        买入技能名称:xxx,
+        消费金额:DBC或CNY,
+        消费时间:xxx
+     },
+     {
+        消费记录id:xxx,
+        买入技能名称:xxx,
+        消费金额:DBC或CNY,
+        消费时间:xxx
+     },
+     ...
+]</code></pre>
+    </div>
+</div>
+<div id="api_52">
+    <div></div>
+    <div class="explain">说明：用户DBC充值之后，程序检测到DBC到账生成充值记录，可以查看DBC充值记录，需要分页加载，每页15个</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/User/Recharge?appId=xxx&robotId=xxx&userId=xxx&page=xxx</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/User/Recharge?appId=com.voice.assistant.main&robotId=573e0d07-2ee9-469e-ace8-a6cc611968e4&userId=4503&page=1</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">[
+    {
+        充值记录id:xxx,
+        充值DBC数量:xxx,
+        充值状态:xxx,
+        时间:xxx
+     },
+     {
+        充值记录id:xxx,
+        充值DBC数量:xxx,
+        充值状态:xxx,
+        时间:xxx
+     },
+     ...
+]</code></pre>
+    </div>
+</div>
+<div id="api_53">
+    <div></div>
+    <div class="explain">说明：用户在点击充值按钮之后需要显示自己的充值地址</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/User/RechargeAddr?appId=xxx&userId=xxx</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/User/RechargeAddr?appId=xxx&userId=xxx</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">fjkjflajfadljnrngrn4242353263</code></pre>
+    </div>
+</div>
+<div id="api_60">
+    <div></div>
+    <div class="explain">说明：DBC购买时，用户点击确认购买，会从余额扣除相应的DBC</div>
+    <div class="method">POST</div>
+    <div class="code">
+        <pre><code class="hljs">/User/DBCPay</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/User/DBCPay
+
+{
+    appId:xxx,
+    robotId:xxx,
+    userId:xxx,
+    skillId:xxx,
+    charge:1.5
+}
+        </code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">{
+    success:true
+}</code></pre>
+    </div>
+</div>
+<div id="api_61">
+    <div></div>
+    <div class="explain">说明：需要上滑加载，按页号加载技能，每页加载最多15个。返回的每个技能需要包含字段（技能id，技能图片，技能名称，使用设备数，技能简介，启用停用状态、星标开启状态）</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/MySkill/List?appId=xxx&robotId=xxx&userId=xxx&page=xxx</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/MySkill/List?appId=com.voice.assistant.main&robotId=573e0d07-2ee9-469e-ace8-a6cc611968e4&userId=4503&page=1</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">[
+    {
+        技能id:xxx,
+        技能图片:xxx,
+        技能名称:xxx,
+        使用设备数:xxx,
+        技能简介:xxx,
+        启用停用状态:xxx,
+        星标开启状态:xxx
+     },
+     {
+        技能id:xxx,
+        技能图片:xxx,
+        技能名称:xxx,
+        使用设备数:xxx,
+        技能简介:xxx,
+        启用停用状态:xxx,
+        星标开启状态:xxx
+     },
+     ...
+]</code></pre>
+    </div>
+</div>
+<div id="api_62">
+    <div></div>
+    <div class="explain">说明：需要上滑加载，按页号加载技能，每页加载最多15个。返回的每个技能需要包含字段（技能id，技能图片，技能名称，使用设备数，技能简介，启用停用状态、星标开启状态）</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/MySkill/List?appId=xxx&robotId=xxx&userId=xxx&page=xxx</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/MySkill/List?appId=com.voice.assistant.main&robotId=573e0d07-2ee9-469e-ace8-a6cc611968e4&userId=4503&page=1</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">[
+    {
+        技能id:xxx,
+        技能图片:xxx,
+        技能名称:xxx,
+        使用设备数:xxx,
+        技能简介:xxx,
+        启用停用状态:xxx,
+        星标开启状态:xxx
+     },
+     {
+        技能id:xxx,
+        技能图片:xxx,
+        技能名称:xxx,
+        使用设备数:xxx,
+        技能简介:xxx,
+        启用停用状态:xxx,
+        星标开启状态:xxx
+     },
+     ...
+]</code></pre>
+    </div>
+</div>
+<div id="api_63">
+    <div></div>
+    <div class="explain">说明：需要上滑加载，按页号加载技能，每页加载最多15个。返回的每个技能需要包含字段（技能id，技能图片，技能名称，使用设备数，技能简介，启用停用状态、星标开启状态）</div>
+    <div class="method">GET</div>
+    <div class="code">
+        <pre><code class="hljs">/MySkill/List?appId=xxx&robotId=xxx&userId=xxx&page=xxx</code></pre>
+    </div>
+    <div class="example">请求示例</div>
+    <div class="code">
+        <pre><code class="hljs">https://example.com/MySkill/List?appId=com.voice.assistant.main&robotId=573e0d07-2ee9-469e-ace8-a6cc611968e4&userId=4503&page=1</code></pre>
+    </div>
+    <div class="example">返回</div>
+    <div class="code">
+        <pre><code class="hljs">[
+    {
+        技能id:xxx,
+        技能图片:xxx,
+        技能名称:xxx,
+        使用设备数:xxx,
+        技能简介:xxx,
+        启用停用状态:xxx,
+        星标开启状态:xxx
+     },
+     {
+        技能id:xxx,
+        技能图片:xxx,
+        技能名称:xxx,
+        使用设备数:xxx,
+        技能简介:xxx,
+        启用停用状态:xxx,
+        星标开启状态:xxx
+     },
+     ...
+]</code></pre>
+    </div>
+</div>
+<script>
+
+</script>
+</body>
+</html>
